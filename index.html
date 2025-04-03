@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Checker de Elegibilidad - Comunidad</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+    input { padding: 10px; width: 300px; }
+    button { padding: 10px 20px; margin-left: 10px; }
+    #result { margin-top: 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>Verifica tu Wallet</h1>
+  <input type="text" id="wallet" placeholder="Ingresa tu wallet">
+  <button onclick="checkWallet()">Verificar</button>
+  <div id="result"></div>
+
+  <script>
+    async function checkWallet() {
+      const wallet = document.getElementById('wallet').value;
+      if (!wallet) {
+        document.getElementById('result').innerText = 'Por favor, ingresa una wallet.';
+        return;
+      }
+
+      const response = await fetch('/api/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet })
+      });
+      const result = await response.json();
+      document.getElementById('result').innerText = result.message;
+    }
+  </script>
+</body>
+</html>
