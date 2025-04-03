@@ -1,0 +1,2 @@
+# checker-bi
+CHECKER DE ELEGIBILIDAD
