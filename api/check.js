@@ -1,16 +1,16 @@
-const { GoogleSpreadsheet } = require('google-spreadsheet');
-
 module.exports = async (req, res) => {
   const { wallet } = req.body;
 
-  const doc = new GoogleSpreadsheet('1JmMJuKRdMv0sX2sBvakhEXVT_9R79WhA07WxmcZvSGQ');
-  await doc.useApiKey(process.env.GOOGLE_API_KEY);
+  // URL pública del Sheet en formato CSV
+  const url = 'https://docs.google.com/spreadsheets/d/1JmMJuKRdMv0sX2sBvakhEXVT_9R79WhA07WxmcZvSGQ/export?format=csv';
+  
+  // Hacer fetch al CSV
+  const response = await fetch(url);
+  const text = await response.text();
 
-  await doc.loadInfo();
-  const sheet = doc.sheetsByIndex[0];
-  const rows = await sheet.getRows();
-
-  const isEligible = rows.some(row => row['Wallet'] === wallet); // Ajusta 'Wallet' si la columna tiene otro nombre
+  // Convertir CSV a array (asumiendo que las wallets están en la primera columna)
+  const rows = text.split('\n').map(row => row.split(',')[0].trim());
+  const isEligible = rows.some(row => row === wallet);
 
   res.json({
     message: isEligible ? '¡Felicidades! Tu wallet es elegible!' : 'Lo siento, tu wallet no es elegible.'
